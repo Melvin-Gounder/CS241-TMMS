@@ -1,0 +1,56 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TMMS Public Traffic</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <script defer th:src="@{/js/traffic.js}"></script>
+</head>
+<body>
+<header>
+    <div><strong>TMMS</strong><span>Suva–Nausori Corridor</span></div>
+    <nav><a th:href="@{/login}">Sign in</a><a th:href="@{/register}">Register</a></nav>
+</header>
+<main>
+    <section class="hero">
+        <p class="eyebrow">CS241 Assignment 2 — Group 16</p>
+        <h1>Live Traffic Information</h1>
+        <p>Nausori → Nakasi → Nasinu → Valelevu</p>
+    </section>
+
+    <section class="corridor-map" aria-label="Monitored Suva-Nausori corridor">
+        <div class="route-line"></div>
+        <div class="map-stop"><span>1</span><b>Nausori</b><small>Eastern end</small></div>
+        <div class="map-stop"><span>2</span><b>Nakasi</b><small>Kings Road</small></div>
+        <div class="map-stop"><span>3</span><b>Nasinu</b><small>Full junction view</small></div>
+        <div class="map-stop"><span>4</span><b>Valelevu</b><small>Western end</small></div>
+    </section>
+
+    <section id="junctionGrid" class="junction-grid">
+        <article class="junction-card" th:each="s : ${statuses}" th:attr="data-junction-id=${s.junctionId}">
+            <div class="badge" data-field="congestion" th:classappend="${s.congestion}" th:text="${s.congestion}"></div>
+            <h2 th:text="${s.junction}"></h2>
+            <dl>
+                <div><dt>Vehicles</dt><dd data-field="vehicles" th:text="${s.vehicleCount}"></dd></div>
+                <div><dt>Speed</dt><dd><span data-field="speed" th:text="${s.speedKmh}"></span> km/h</dd></div>
+                <div><dt>Occupancy</dt><dd><span data-field="occupancy" th:text="${s.occupancyPercent}"></span>%</dd></div>
+                <div><dt>Queue</dt><dd data-field="queue" th:text="${s.queueLength}"></dd></div>
+                <div><dt>Road</dt><dd data-field="road" th:text="${s.roadCondition}"></dd></div>
+                <div><dt>Green time</dt><dd><span data-field="green" th:text="${s.greenSeconds}"></span>s</dd></div>
+            </dl>
+        </article>
+    </section>
+
+    <section>
+        <h2>Recent incidents</h2>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>Junction</th><th>Type</th><th>Status</th><th>Description</th></tr></thead>
+                <tbody><tr th:each="i : ${incidents}"><td th:text="${i.junction.name}"></td><td th:text="${i.type}"></td><td th:text="${i.status}"></td><td th:text="${i.description}"></td></tr></tbody>
+            </table>
+        </div>
+    </section>
+</main>
+</body>
+</html>

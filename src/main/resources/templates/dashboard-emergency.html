@@ -1,0 +1,27 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Emergency Services</title><link rel="stylesheet" th:href="@{/css/app.css}"><script defer th:src="@{/js/traffic.js}"></script></head>
+<body>
+<header><strong>Emergency Services</strong><nav><a th:href="@{/traffic}">Public view</a><form th:action="@{/logout}" method="post"><button class="link">Sign out</button></form></nav></header>
+<main>
+    <h1>Emergency Vehicle Priority</h1>
+    <p>Priority lasts 30 seconds and then the junction returns to adaptive signal control.</p>
+    <p th:if="${param.success}" class="ok">Emergency priority activated.</p>
+    <p th:if="${param.error}" class="error">Check the vehicle type and identifier. Use exactly two uppercase letters followed by three digits, for example AB123.</p>
+    <form class="panel" th:action="@{/emergency/priority}" method="post">
+        <label>Junction<select name="junctionId" required><option th:each="s : ${statuses}" th:value="${s.junctionId}" th:text="${s.junction}"></option></select></label>
+        <label>Vehicle type<select name="vehicleType" required><option value="Ambulance">Ambulance</option><option value="Police">Police</option><option value="Fire">Fire</option></select></label>
+        <label>Vehicle identifier<input name="vehicleId" pattern="[A-Z]{2}[0-9]{3}" minlength="5" maxlength="5" autocomplete="off" placeholder="AB123" title="Exactly two uppercase letters followed by three digits" required></label>
+        <button>Activate 30-second priority</button>
+    </form>
+
+    <section class="junction-grid">
+        <article class="junction-card" th:each="s : ${statuses}" th:attr="data-junction-id=${s.junctionId}">
+            <div class="badge" data-field="congestion" th:classappend="${s.congestion}" th:text="${s.congestion}"></div>
+            <h2 th:text="${s.junction}"></h2>
+            <p>Emergency: <b data-field="emergency" th:text="${s.emergencyPriority ? 'ACTIVE' : 'Inactive'}"></b></p>
+            <p>Current green: <b data-field="green" th:text="${s.greenSeconds}"></b>s</p>
+        </article>
+    </section>
+</main>
+</body></html>
